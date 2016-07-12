@@ -74,7 +74,8 @@ export DATA=$(cat <<ENDOFTEMPLATE
         Order deny,allow
         Allow from all
     </Directory>
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 # Log directories change based on the implementation of Apache
 if [[ "$DISTRO" == "REDHAT" ]]; then
@@ -82,14 +83,16 @@ export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 
     CustomLog /var/log/httpd/{{data['host']}}-access.log combined
     ErrorLog  /var/log/httpd/{{data['host']}}-error.log
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 elif [[ "$DISTRO" == "DEBIAN" ]]; then
 export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 
     CustomLog /var/log/apache2/{{data['host']}}-access.log combined
     ErrorLog  /var/log/apache2/{{data['host']}}-error.log
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 fi
 
@@ -126,7 +129,8 @@ export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 #        Allow from all
 #    </Directory>
 #
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 if [[ "$DISTRO" == "REDHAT" ]]; then
 export DATA=${DATA}$(cat <<ENDOFTEMPLATE
@@ -144,7 +148,8 @@ export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 #    SSLCertificateKeyFile /etc/pki/tls/private/{{data['host']}}.key
 #    SSLCACertificateKeyFile /etc/pki/tls/certs/{{data['host']}}.ca.crt
 #
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 elif [[ "$DISTRO" == "DEBIAN" ]]; then
 export DATA=${DATA}$(cat <<ENDOFTEMPLATE
@@ -162,7 +167,8 @@ export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 #    SSLCertificateKeyFile /etc/ssl/private/{{data['host']}}.key
 #    SSLCACertificateKeyFile /etc/ssl/certs/{{data['host']}}.ca.crt
 #
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 fi
 export DATA=${DATA}$(cat <<ENDOFTEMPLATE
@@ -176,7 +182,8 @@ export DATA=${DATA}$(cat <<ENDOFTEMPLATE
 #            downgrade-1.0 force-response-1.0 \\ 
 #    BrowserMatch \"MSIE [17-9]\" ssl-unclean-shutdown
 #</VirtualHost>
-ENDOFTEMPLATE)
+ENDOFTEMPLATE
+)
 
 # Create our virtual host
 if [[ "$DISTRO" == "REDHAT" ]]; then
@@ -186,16 +193,16 @@ if [[ "$DISTRO" == "REDHAT" ]]; then
     fi
     echo "$DATA" > /etc/httpd/vhost.d/{{data['host']}}.conf
     mkdir -p {{data['directory']}}
-    {% if data['reload'] %}
+#    {% if data['reload'] %}
     service httpd reload
-    {% endif %}
+#    {% endif %}
 elif [[ "$DISTRO" == "DEBIAN" ]]; then
     echo "$DATA" > /etc/apache2/sites-available/{{data['host']}}
     mkdir -p {{data['directory']}}
     a2ensite {{data['host']}} &&
-    {% if data['reload'] %}
+#    {% if data['reload'] %}
     service apache2 reload
-    {% endif %}
+#    {% endif %}
 fi
 
 exit 0
